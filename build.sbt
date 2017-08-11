@@ -1,15 +1,14 @@
-organization in Global := "io.backchat.inflector"
-homepage in Global := Some(url("https://github.com/backchatio/scala-inflector"))
+organization in Global := "com.qvantel"
+homepage in Global := Some(url("https://github.com/qvantel/scala-inflector"))
 startYear in Global := Some(2010)
-licenses in Global := Seq(("MIT", url("http://github.com/backchatio/scala-inflector/raw/HEAD/LICENSE")))
+licenses in Global := Seq(("MIT", url("https://github.com/qvantel/scala-inflector/raw/HEAD/LICENSE")))
 
-version in Global := "1.3.6-SNAPSHOT"
+version in Global := "1.3.6"
 
-scalaVersion in Global := "2.12.0"
-crossScalaVersions in Global := Seq(scalaVersion.value, "2.11.8")
+scalaVersion in Global := "2.12.3"
+crossScalaVersions in Global := Seq(scalaVersion.value, "2.11.11")
 
 scalacOptions in Global ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8")
-scalacOptions in Global ++= (if (scalaVersion.value startsWith "2.12.") Seq("-opt:_") else Seq("-optimize"))
 
 resolvers in Global += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
@@ -33,7 +32,18 @@ lazy val scalaInflector = crossProject.in(file("."))
             <name>Ivan Porto Carrero</name>
             <url>http://flanders.co.nz/</url>
           </developer>
-        </developers>),
+          <developer>
+            <id>liff</id>
+            <name>Olli Helenius</name>
+            <url>https://github.com/liff/</url>
+          </developer>
+          <developer>
+            <id>Doikor</id>
+            <name>Aki Huttunen</name>
+            <url>http://doikor.fi/</url>
+          </developer>
+        </developers>
+      ),
     packageOptions += Package.ManifestAttributes(
       "Created-By" -> "Simple Build Tool",
       "Built-By" -> System.getProperty("user.name"),
