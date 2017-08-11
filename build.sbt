@@ -1,20 +1,23 @@
-organization in Global := "com.qvantel"
-homepage in Global := Some(url("https://github.com/qvantel/scala-inflector"))
-startYear in Global := Some(2010)
-licenses in Global := Seq(("MIT", url("https://github.com/qvantel/scala-inflector/raw/HEAD/LICENSE")))
+organization in ThisBuild := "com.qvantel"
+homepage in ThisBuild := Some(url("https://github.com/qvantel/scala-inflector"))
+startYear in ThisBuild := Some(2010)
+licenses in ThisBuild := Seq(("MIT", url("https://github.com/qvantel/scala-inflector/raw/HEAD/LICENSE")))
 
-version in Global := "1.3.6"
+version in ThisBuild := "1.3.6"
 
-scalaVersion in Global := "2.12.3"
-crossScalaVersions in Global := Seq(scalaVersion.value, "2.11.11")
+scalaVersion in ThisBuild := "2.12.3"
 
-scalacOptions in Global ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8")
+scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8")
 
-resolvers in Global += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+resolvers in ThisBuild += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
+publishArtifact in Test := false
+
+publishMavenStyle in ThisBuild := true
 
 lazy val root = project.in(file("."))
   .aggregate(scalaInflectorJVM, scalaInflectorJS)
-  .settings(publish := (), publishLocal := (), publishArtifact := false)
+  .settings(publishArtifact := false, publish := {}, publishLocal := {})
 
 lazy val scalaInflector = crossProject.in(file("."))
   .settings(
@@ -65,7 +68,9 @@ lazy val scalaInflector = crossProject.in(file("."))
     },
     publishArtifact in Test := false,
     pomIncludeRepository := { x => false },
-    exportJars := true)
+    exportJars := true,
+    crossScalaVersions := Seq(scalaVersion.value, "2.11.11")
+  )
 
 lazy val scalaInflectorJVM = scalaInflector.jvm
 lazy val scalaInflectorJS = scalaInflector.js
