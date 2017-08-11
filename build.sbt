@@ -1,52 +1,72 @@
-organization in ThisBuild := "com.qvantel"
-homepage in ThisBuild := Some(url("https://github.com/qvantel/scala-inflector"))
-startYear in ThisBuild := Some(2010)
-licenses in ThisBuild := Seq(("MIT", url("https://github.com/qvantel/scala-inflector/raw/HEAD/LICENSE")))
-
-version in ThisBuild := "1.3.6"
-
-scalaVersion in ThisBuild := "2.12.3"
-
-scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8")
-
-resolvers in ThisBuild += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-
-publishArtifact in Test := false
-
-publishMavenStyle in ThisBuild := true
-
 lazy val root = project.in(file("."))
   .aggregate(scalaInflectorJVM, scalaInflectorJS)
   .settings(publishArtifact := false, publish := {}, publishLocal := {})
+  .settings(inThisBuild(List(
+    organization := "com.qvantel",
+    homepage     := Some(url("https://github.com/qvantel/scala-inflector")),
+    startYear    := Some(2010),
+    licenses     := Seq(("MIT", url("https://github.com/qvantel/scala-inflector/raw/HEAD/LICENSE"))),
+    version      := "1.3.6",
+
+    scalaVersion := "2.12.3",
+    crossScalaVersions := Seq(scalaVersion.value, "2.11.11"),
+
+    scalacOptions ++= Seq(
+      "-deprecation",
+      "-encoding", "UTF-8",
+      "-explaintypes",
+      "-feature",
+      "-target:jvm-1.8",
+      "-unchecked",
+      // advanced
+      "-Xcheckinit",
+      "-Xfuture",
+      "-Xlog-reflective-calls",
+      "-Xlog-free-terms",
+      "-Xlog-free-types",
+      "-Xverify",
+      // private
+      "-Yno-adapted-args",
+      "-Yrangepos",
+      "-Ywarn-dead-code",
+      "-Ywarn-inaccessible",
+      "-Ywarn-infer-any",
+      "-Ywarn-nullary-override",
+      "-Ywarn-nullary-unit",
+      "-Ywarn-value-discard"),
+
+    scalacOptions ++= {
+      if (scalaVersion.value startsWith "2.11.") {
+        Seq(
+          "-Xlint:_",
+          "-Ywarn-unused",
+          "-Ywarn-unused-import")
+      } else {
+        Seq(
+          "-opt-warnings:_",
+          "-Xlint:-unused,_",
+          "-Ywarn-unused:_")
+      }
+    },
+
+    resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")))
 
 lazy val scalaInflector = crossProject.in(file("."))
   .settings(
     name := "scala-inflector",
+
     libraryDependencies ++= Seq("org.scalatest" %%% "scalatest" % "3.0.1" % "test"),
-    pomExtra := (
-      <scm>
-        <connection>scm:git:git://github.com/backchatio/scala-inflector.git</connection>
-        <developerConnection>scm:git:git@github.com:backchatio/scala-inflector.git</developerConnection>
-        <url>https://github.com/backchatio/scala-inflector</url>
-      </scm>
-        <developers>
-          <developer>
-            <id>casualjim</id>
-            <name>Ivan Porto Carrero</name>
-            <url>http://flanders.co.nz/</url>
-          </developer>
-          <developer>
-            <id>liff</id>
-            <name>Olli Helenius</name>
-            <url>https://github.com/liff/</url>
-          </developer>
-          <developer>
-            <id>Doikor</id>
-            <name>Aki Huttunen</name>
-            <url>http://doikor.fi/</url>
-          </developer>
-        </developers>
-      ),
+
+    developers := List(
+      Developer("casualjim", "Ivan Porto Carrero", "",                         url("http://flanders.co.nz/")),
+      Developer("liff",      "Olli Helenius",      "liff@iki.fi",              url("https://github.com/liff/")),
+      Developer("Doikor",    "Aki Huttunen",       "aki.huttunen@qvantel.com", url("https://doikor.fi/"))),
+
+    scmInfo := Some(ScmInfo(
+      url("https://github.com/qvantel/scala-inflector"),
+      "scm:git:git://github.com/qvantel/scala-inflector.git",
+      "scm:git:git://github.com/qvantel/scala-inflector.git")),
+
     packageOptions += Package.ManifestAttributes(
       "Created-By" -> "Simple Build Tool",
       "Built-By" -> System.getProperty("user.name"),
@@ -58,6 +78,7 @@ lazy val scalaInflector = crossProject.in(file("."))
       "Implementation-Version" -> version.value,
       "Implementation-Vendor-Id" -> organization.value,
       "Implementation-Vendor" -> organization.value),
+
     publishMavenStyle := true,
     publishTo := {
       val nexus = "https://oss.sonatype.org/"
