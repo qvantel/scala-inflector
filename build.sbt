@@ -1,3 +1,4 @@
+import sbtcrossproject.CrossPlugin.autoImport.crossProject
 lazy val root = project.in(file("."))
   .aggregate(scalaInflectorJVM, scalaInflectorJS)
   .settings(publishArtifact := false, publish := {}, publishLocal := {})
@@ -6,14 +7,13 @@ lazy val root = project.in(file("."))
     homepage     := Some(url("https://github.com/qvantel/scala-inflector")),
     startYear    := Some(2010),
     licenses     := Seq(("MIT", url("https://github.com/qvantel/scala-inflector/raw/HEAD/LICENSE"))),
-    version      := "1.3.6",
-
-    scalaVersion := "2.12.3",
-    crossScalaVersions := Seq(scalaVersion.value, "2.11.11"),
-
+    version      := "1.4.0",
+    scalaVersion := "2.13.3",
+    crossScalaVersions := Seq(scalaVersion.value, "2.12.3", "2.11.11"),
     scalacOptions ++= Seq(
       "-deprecation",
-      "-encoding", "UTF-8",
+      "-encoding",
+      "UTF-8",
       "-explaintypes",
       "-feature",
       "-target:jvm-1.8",
@@ -26,37 +26,30 @@ lazy val root = project.in(file("."))
       "-Xlog-free-types",
       "-Xverify",
       // private
-      "-Yno-adapted-args",
       "-Yrangepos",
       "-Ywarn-dead-code",
-      "-Ywarn-inaccessible",
-      "-Ywarn-infer-any",
-      "-Ywarn-nullary-override",
-      "-Ywarn-nullary-unit",
-      "-Ywarn-value-discard"),
-
+      "-Ywarn-value-discard"
+    ),
     scalacOptions ++= {
       if (scalaVersion.value startsWith "2.11.") {
         Seq(
           "-Xlint:_",
           "-Ywarn-unused",
-          "-Ywarn-unused-import")
-      } else {
-        Seq(
-          "-opt-warnings:_",
-          "-Xlint:-unused,_",
-          "-Ywarn-unused:_")
-      }
+          "-Ywarn-unused-import",
+          "-Yno-adapted-args",
+          "-Ywarn-inaccessible",
+          "-Ywarn-infer-any",
+          "-Ywarn-nullary-override",
+          "-Ywarn-nullary-unit"
+        )
+      } else Seq.empty
     },
-
     resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")))
 
-lazy val scalaInflector = crossProject.in(file("."))
+lazy val scalaInflector = crossProject(JSPlatform, JVMPlatform).in(file("."))
   .settings(
     name := "scala-inflector",
-
-    libraryDependencies ++= Seq("org.scalatest" %%% "scalatest" % "3.0.1" % "test"),
-
+    libraryDependencies ++= Seq("org.scalatest" %%% "scalatest" % "3.0.8" % "test"),
     developers := List(
       Developer("casualjim", "Ivan Porto Carrero", "",                         url("http://flanders.co.nz/")),
       Developer("liff",      "Olli Helenius",      "liff@iki.fi",              url("https://github.com/liff/")),
@@ -90,7 +83,7 @@ lazy val scalaInflector = crossProject.in(file("."))
     publishArtifact in Test := false,
     pomIncludeRepository := { x => false },
     exportJars := true,
-    crossScalaVersions := Seq(scalaVersion.value, "2.11.11")
+    crossScalaVersions := Seq(scalaVersion.value, "2.12.3", "2.11.11")
   )
 
 lazy val scalaInflectorJVM = scalaInflector.jvm
